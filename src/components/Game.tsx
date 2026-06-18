@@ -290,7 +290,7 @@ export default function Game({ characterImage, bgColor, onExit }: GameProps) {
 
       <button
         onClick={(e) => { setIsPaused(!isPaused); e.currentTarget.blur(); }}
-        className="absolute top-6 right-6 sm:right-10 z-30 flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/50 text-white hover:bg-white hover:text-black transition-colors backdrop-blur-sm"
+        className="absolute top-6 right-6 sm:right-10 z-30 flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/50 bg-black/20 text-white hover:bg-white hover:text-black transition-colors"
       >
         {isPaused ? <Play size={24} /> : <Pause size={24} />}
       </button>
@@ -299,13 +299,13 @@ export default function Game({ characterImage, bgColor, onExit }: GameProps) {
 
       {/* Mobile Controls (Invisible Tap Zones) */}
       <div className="absolute bottom-0 inset-x-0 h-2/3 flex z-30 sm:hidden">
-        <div className="flex-1" onTouchStart={handleTouchLeft} onClick={handleTouchLeft} />
-        <div className="flex-1" onTouchStart={handleTouchRight} onClick={handleTouchRight} />
+        <div className="flex-1" onPointerDown={handleTouchLeft} style={{ touchAction: 'none' }} />
+        <div className="flex-1" onPointerDown={handleTouchRight} style={{ touchAction: 'none' }} />
       </div>
 
       {/* Game Over Screen */}
       {gameOver && (
-        <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-md">
+        <div className="absolute inset-0 bg-black flex items-center justify-center z-50">
           <div className="text-center px-4">
             <h2 className="text-6xl sm:text-8xl text-red-500 mb-2 uppercase tracking-wider font-bold drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]">
               CRASHED
@@ -330,7 +330,7 @@ export default function Game({ characterImage, bgColor, onExit }: GameProps) {
       )}
       {/* Pause Screen */}
       {isPaused && !gameOver && (
-        <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-md">
+        <div className="absolute inset-0 bg-black flex items-center justify-center z-50">
           <div className="text-center px-4">
             <h2 className="text-6xl sm:text-8xl text-white mb-10 uppercase tracking-wider font-bold">
               PAUSED
