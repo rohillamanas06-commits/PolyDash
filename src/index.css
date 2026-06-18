@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-anton: "Anton", sans-serif;
+}
+
+@utility font-anton {
+  font-family: "Anton", sans-serif;
+}
