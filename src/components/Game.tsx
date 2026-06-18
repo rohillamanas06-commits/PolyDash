@@ -3,8 +3,11 @@ import { Pause, Play } from 'lucide-react';
 
 interface GameProps {
   characterImage: string;
+  bgColor: string;
   onExit: () => void;
 }
+
+const grainSvg = `data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E`;
 
 interface Hurdle {
   id: number;
@@ -13,7 +16,7 @@ interface Hurdle {
 }
 
 const HURDLE_SPEED = 1.0; // slightly slower for 3D perspective
-const SPAWN_RATE = 50; 
+const SPAWN_RATE = 50;
 
 const playSound = (type: 'move' | 'crash' | 'score') => {
   const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
@@ -21,10 +24,10 @@ const playSound = (type: 'move' | 'crash' | 'score') => {
   const ctx = new AudioContext();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-  
+
   osc.connect(gain);
   gain.connect(ctx.destination);
-  
+
   if (type === 'move') {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(400, ctx.currentTime);
@@ -52,7 +55,7 @@ const playSound = (type: 'move' | 'crash' | 'score') => {
   }
 };
 
-export default function Game({ characterImage, onExit }: GameProps) {
+export default function Game({ characterImage, bgColor, onExit }: GameProps) {
   const [lane, setLane] = useState(1);
   const [hurdles, setHurdles] = useState<Hurdle[]>([]);
   const [score, setScore] = useState(0);
@@ -87,7 +90,7 @@ export default function Game({ characterImage, onExit }: GameProps) {
       e.preventDefault();
       e.stopPropagation();
       if (e.repeat) return;
-      
+
       if (!gameOver) {
         setIsPaused((prev) => !prev);
       }
@@ -122,7 +125,7 @@ export default function Game({ characterImage, onExit }: GameProps) {
     if (gameState.current.gameOver || gameState.current.isPaused) return;
 
     frameCount.current++;
-    
+
     if (frameCount.current % SPAWN_RATE === 0) {
       const newLane = Math.floor(Math.random() * 3);
       gameState.current.hurdles.push({
@@ -138,7 +141,7 @@ export default function Game({ characterImage, onExit }: GameProps) {
     })).filter(h => h.y < 120);
 
     const playerLane = gameState.current.lane;
-    const playerTop = 85; 
+    const playerTop = 85;
     const playerBottom = 100;
 
     let crashed = false;
@@ -146,7 +149,7 @@ export default function Game({ characterImage, onExit }: GameProps) {
       if (h.lane === playerLane) {
         const hurdleTop = h.y;
         const hurdleBottom = h.y + 10;
-        
+
         if (hurdleBottom > playerTop && hurdleTop < playerBottom) {
           crashed = true;
           break;
@@ -192,13 +195,19 @@ export default function Game({ characterImage, onExit }: GameProps) {
   };
 
   return (
-    <div 
+    <div
       ref={containerRef}
       tabIndex={0}
       onKeyDownCapture={handleKeyDown}
-      className="relative w-full h-screen overflow-hidden font-anton select-none touch-none bg-cover bg-center bg-no-repeat outline-none"
-      style={{ backgroundImage: 'url(/overcast.png)' }}
+      className="relative w-full h-screen overflow-hidden font-anton select-none touch-none outline-none"
+      style={{ backgroundColor: bgColor }}
     >
+      {/* Noise Texture */}
+      <div
+        className="absolute inset-0 pointer-events-none mix-blend-multiply opacity-50 z-[1]"
+        style={{ backgroundImage: `url("${grainSvg}")` }}
+      />
+
       <style>{`
         @keyframes pan-bg {
           from { background-position: 0 -100px; }
@@ -207,15 +216,15 @@ export default function Game({ characterImage, onExit }: GameProps) {
       `}</style>
 
       {/* 3D Track Container */}
-      <div 
-        className="absolute inset-x-0 bottom-0 h-full w-full pointer-events-none" 
+      <div
+        className="absolute inset-x-0 bottom-0 h-full w-full pointer-events-none"
         style={{ perspective: '800px', transformStyle: 'preserve-3d' }}
       >
-        <div 
+        <div
           className="absolute bottom-0 w-[160%] -left-[30%] h-[200%] origin-bottom"
-          style={{ 
-            transform: 'rotateX(65deg)', 
-            transformStyle: 'preserve-3d' 
+          style={{
+            transform: 'rotateX(65deg)',
+            transformStyle: 'preserve-3d'
           }}
         >
 
@@ -227,10 +236,10 @@ export default function Game({ characterImage, onExit }: GameProps) {
           {hurdles.map(h => (
             <div
               key={h.id}
-              className="absolute w-[24%] flex flex-col justify-end items-center z-10"
+              className="absolute w-[16%] flex flex-col justify-end items-center z-10"
               style={{
-                height: '15%',
-                left: `calc(${h.lane * 33.33}% + 4.66%)`,
+                height: '10%',
+                left: `calc(${h.lane * 33.33}% + 8.66%)`,
                 top: `${h.y}%`,
                 // Rotate back to stand up perfectly towards camera
                 transform: 'rotateX(-65deg) translateY(-50%)',
@@ -240,7 +249,7 @@ export default function Game({ characterImage, onExit }: GameProps) {
             >
               {/* Barricade Board */}
               <div className="w-full h-[40%] bg-white border-[3px] border-orange-500 rounded-sm relative overflow-hidden shadow-2xl mb-1">
-                <div 
+                <div
                   className="absolute inset-0 opacity-90"
                   style={{
                     backgroundImage: 'repeating-linear-gradient(45deg, #f97316, #f97316 20px, #ffffff 20px, #ffffff 40px)'
@@ -258,13 +267,13 @@ export default function Game({ characterImage, onExit }: GameProps) {
       </div>
 
       {/* Player Character */}
-      <div 
+      <div
         className="absolute bottom-[2%] w-[25%] h-[35%] flex items-end justify-center transition-all duration-200 ease-out z-20"
         style={{ left: `calc(${lane * 33.33}% + 4.16%)` }}
       >
-        <img 
-          src={characterImage} 
-          alt="Player" 
+        <img
+          src={characterImage}
+          alt="Player"
           className="h-full object-contain filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]"
           draggable={false}
         />
@@ -278,8 +287,8 @@ export default function Game({ characterImage, onExit }: GameProps) {
           SCORE: {score}
         </div>
       </div>
-      
-      <button 
+
+      <button
         onClick={(e) => { setIsPaused(!isPaused); e.currentTarget.blur(); }}
         className="absolute top-6 right-6 sm:right-10 z-30 flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/50 text-white hover:bg-white hover:text-black transition-colors backdrop-blur-sm"
       >
@@ -299,17 +308,17 @@ export default function Game({ characterImage, onExit }: GameProps) {
         <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-md">
           <div className="text-center px-4">
             <h2 className="text-6xl sm:text-8xl text-red-500 mb-2 uppercase tracking-wider font-bold drop-shadow-[0_0_20px_rgba(239,68,68,0.5)]">
-              CRASHED!
+              CRASHED
             </h2>
             <p className="text-2xl sm:text-3xl text-slate-300 mb-10 font-sans font-medium">Final Score: {score}</p>
             <div className="flex flex-col gap-4 sm:flex-row justify-center">
-              <button 
+              <button
                 onClick={resetGame}
                 className="px-8 py-4 bg-white text-black text-2xl rounded-full hover:scale-105 transition-transform uppercase"
               >
                 PLAY AGAIN
               </button>
-              <button 
+              <button
                 onClick={(e) => { onExit(); e.currentTarget.blur(); }}
                 className="px-8 py-4 bg-transparent border-2 border-white text-white text-xl rounded-full hover:bg-white/10 transition-colors uppercase font-sans font-semibold"
               >
@@ -327,13 +336,13 @@ export default function Game({ characterImage, onExit }: GameProps) {
               PAUSED
             </h2>
             <div className="flex flex-col gap-4 sm:flex-row justify-center">
-              <button 
+              <button
                 onClick={(e) => { setIsPaused(false); e.currentTarget.blur(); }}
                 className="px-8 py-4 bg-white text-black text-2xl rounded-full hover:scale-105 transition-transform uppercase"
               >
                 RESUME
               </button>
-              <button 
+              <button
                 onClick={onExit}
                 className="px-8 py-4 bg-transparent border-2 border-white text-white text-xl rounded-full hover:bg-white/10 transition-colors uppercase font-sans font-semibold"
               >

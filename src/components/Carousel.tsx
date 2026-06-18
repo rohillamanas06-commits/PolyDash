@@ -11,7 +11,7 @@ const IMAGES = [
 const grainSvg = `data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E`;
 
 interface CarouselProps {
-  onPlay: (characterImage: string) => void;
+  onPlay: (characterImage: string, bgColor: string) => void;
 }
 
 export default function Carousel({ onPlay }: CarouselProps) {
@@ -204,7 +204,7 @@ export default function Carousel({ onPlay }: CarouselProps) {
 
         {/* Bottom-right link */}
         <button
-          onClick={() => onPlay(IMAGES[activeIndex].src)}
+          onClick={() => onPlay(IMAGES[activeIndex].src, IMAGES[activeIndex].bg)}
           className="absolute bottom-6 right-4 sm:bottom-20 sm:right-10 z-[60] flex items-center text-white opacity-95 hover:opacity-100 transition-opacity duration-200 font-anton uppercase no-underline cursor-pointer"
           style={{
             fontSize: 'clamp(20px, 4vw, 56px)',
