@@ -104,7 +104,7 @@ function GameScene({ characterImage, lane, isPaused, gameOver, onCrash, onScoreU
       <directionalLight position={[10, 20, 5]} intensity={1.5} castShadow />
       <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} />
 
-      <Plane args={[30, 200]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, -40]} receiveShadow>
+      <Plane args={[60, 200]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, -40]} receiveShadow>
         <meshStandardMaterial color="#333" roughness={0.8} metalness={0.2} />
       </Plane>
       <Plane args={[0.2, 200]} rotation={[-Math.PI / 2, 0, 0]} position={[-LANE_WIDTH / 2, -0.49, -40]} receiveShadow>
