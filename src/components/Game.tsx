@@ -28,9 +28,9 @@ function ResponsiveCamera() {
     if (camera instanceof THREE.PerspectiveCamera) {
       const aspect = size.width / size.height;
       if (aspect < 0.8) {
-        // Mobile portrait: Wider FOV and move camera back to fit the lanes
-        camera.fov = 75;
-        camera.position.set(0, 6, 13);
+        // Mobile portrait: Wider FOV and move camera back to fully fit the character
+        camera.fov = 80;
+        camera.position.set(0, 7, 16);
       } else {
         // Desktop landscape
         camera.fov = 60;
