@@ -3,10 +3,10 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { playSound } from '../lib/audio';
 
 const IMAGES = [
-  { src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/1.02464a56.png', bg: '#F4845F', panel: '#F79B7F', desc: 'Dash through vibrant streets, dodge obstacles, and collect coins in this fast-paced endless runner. Show off your agility as the fearless trailblazer. Play now!' },
-  { src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/2.b977faab.png', bg: '#6BBF7A', panel: '#85CC92', desc: 'Leap over hurdles and sprint through neon alleys. Stay quick on your feet with our swift green speedster. Can you reach the top score? Dash now!' },
-  { src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/3.4df853b4.png', bg: '#E882B4', panel: '#ED9DC4', desc: 'Style meets speed in this endless runner. Glide past obstacles and grab power-ups with undeniable flair. Take on the ultimate dash challenge today!' },
-  { src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/4.4457fbce.png', bg: '#6EB5FF', panel: '#8DC4FF', desc: 'Keep cool under pressure as you race down the futuristic track. Master sharp turns and sudden drops with the coolest runner in the crew. Start your run!' },
+  { src: '/char1.png', bg: '#F4845F', panel: '#F79B7F', desc: 'Dash through vibrant streets, dodge obstacles, and collect coins in this fast-paced endless runner. Show off your agility as the fearless trailblazer. Play now!' },
+  { src: '/char2.png', bg: '#6BBF7A', panel: '#85CC92', desc: 'Leap over hurdles and sprint through neon alleys. Stay quick on your feet with our swift green speedster. Can you reach the top score? Dash now!' },
+  { src: '/char3.png', bg: '#E882B4', panel: '#ED9DC4', desc: 'Style meets speed in this endless runner. Glide past obstacles and grab power-ups with undeniable flair. Take on the ultimate dash challenge today!' },
+  { src: '/char4.png', bg: '#6EB5FF', panel: '#8DC4FF', desc: 'Keep cool under pressure as you race down the futuristic track. Master sharp turns and sudden drops with the coolest runner in the crew. Start your run!' },
 ];
 
 const grainSvg = `data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E`;
@@ -18,10 +18,9 @@ interface CarouselProps {
 export default function Carousel({ onPlay }: CarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 640);
     const handleResize = () => setIsMobile(window.innerWidth < 640);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
