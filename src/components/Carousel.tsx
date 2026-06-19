@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { playSound } from '../lib/audio';
 
 const IMAGES = [
   { src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/1.02464a56.png', bg: '#F4845F', panel: '#F79B7F', desc: 'Dash through vibrant streets, dodge obstacles, and collect coins in this fast-paced endless runner. Show off your agility as the fearless trailblazer. Play now!' },
@@ -35,6 +36,7 @@ export default function Carousel({ onPlay }: CarouselProps) {
 
   const navigate = (dir: 'next' | 'prev') => {
     if (isAnimating) return;
+    playSound('move');
     setIsAnimating(true);
     if (dir === 'next') {
       setActiveIndex((prev) => (prev + 1) % 4);
