@@ -1,8 +1,19 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+let ctx: AudioContext | null = null;
+
 export const playSound = (type: 'move' | 'crash' | 'score') => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioContext) return;
-  const ctx = new AudioContext();
+  if (!AudioContextClass) return;
+  
+  if (!ctx) {
+    ctx = new AudioContextClass();
+  }
+  
+  // Resume the audio context if it was suspended by the browser
+  if (ctx.state === 'suspended') {
+    ctx.resume();
+  }
+
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
 

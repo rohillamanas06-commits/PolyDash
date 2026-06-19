@@ -17,7 +17,6 @@ interface CarouselProps {
 
 export default function Carousel({ onPlay }: CarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
 
   useEffect(() => {
@@ -34,17 +33,12 @@ export default function Carousel({ onPlay }: CarouselProps) {
   }, []);
 
   const navigate = (dir: 'next' | 'prev') => {
-    if (isAnimating) return;
     playSound('move');
-    setIsAnimating(true);
     if (dir === 'next') {
       setActiveIndex((prev) => (prev + 1) % 4);
     } else {
       setActiveIndex((prev) => (prev + 3) % 4);
     }
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, 650);
   };
 
   const getRoleStyle = (index: number) => {
