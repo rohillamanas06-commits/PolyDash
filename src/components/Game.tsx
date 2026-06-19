@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Pause, Play } from 'lucide-react';
-import { Canvas, useFrame, useLoader } from '@react-three/fiber';
+import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { Sky, Plane, Box, Billboard } from '@react-three/drei';
 import * as THREE from 'three';
 import { playSound } from '../lib/audio';
@@ -20,6 +20,28 @@ interface Hurdle {
 const HURDLE_SPEED = 0.6;
 const SPAWN_RATE = 40;
 const LANE_WIDTH = 5.0;
+
+function ResponsiveCamera() {
+  const { camera, size } = useThree();
+
+  useEffect(() => {
+    if (camera instanceof THREE.PerspectiveCamera) {
+      const aspect = size.width / size.height;
+      if (aspect < 0.8) {
+        // Mobile portrait: Wider FOV and move camera back to fit the lanes
+        camera.fov = 75;
+        camera.position.set(0, 6, 13);
+      } else {
+        // Desktop landscape
+        camera.fov = 60;
+        camera.position.set(0, 5, 10);
+      }
+      camera.updateProjectionMatrix();
+    }
+  }, [camera, size]);
+
+  return null;
+}
 
 interface GameSceneProps {
   characterImage: string;
@@ -206,6 +228,7 @@ export default function Game({ characterImage, bgColor, onExit }: GameProps) {
       <div className="absolute inset-0 z-0">
         <Canvas shadows camera={{ position: [0, 5, 10], fov: 60, rotation: [-0.2, 0, 0] }}>
           <React.Suspense fallback={null}>
+            <ResponsiveCamera />
             <GameScene
               characterImage={characterImage}
               lane={lane}
