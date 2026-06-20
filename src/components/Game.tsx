@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
-import { Sky, Plane, Box, Billboard } from '@react-three/drei';
+import { Plane, Box, Billboard } from '@react-three/drei';
 import * as THREE from 'three';
 import { playSound } from '../lib/audio';
 
@@ -20,6 +20,8 @@ interface Hurdle {
 const HURDLE_SPEED = 0.6;
 const SPAWN_RATE = 40;
 const LANE_WIDTH = 5.0;
+
+const HORIZON_PCT = 38;
 
 function ResponsiveCamera() {
   const { camera, size } = useThree();
@@ -124,7 +126,6 @@ function GameScene({ characterImage, lane, isPaused, gameOver, onCrash, onScoreU
     <>
       <ambientLight intensity={0.6} />
       <directionalLight position={[10, 20, 5]} intensity={1.5} castShadow />
-      <Sky distance={450000} sunPosition={[0, 1, 0]} inclination={0} azimuth={0.25} />
 
       <Plane args={[60, 200]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, -40]} receiveShadow>
         <meshStandardMaterial color="#333" roughness={0.8} metalness={0.2} />
@@ -156,7 +157,7 @@ function GameScene({ characterImage, lane, isPaused, gameOver, onCrash, onScoreU
   );
 }
 
-export default function Game({ characterImage, bgColor, onExit }: GameProps) {
+export default function Game({ characterImage, onExit }: GameProps) {
   const [lane, setLane] = useState(1);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
@@ -222,9 +223,59 @@ export default function Game({ characterImage, bgColor, onExit }: GameProps) {
       ref={containerRef}
       tabIndex={0}
       onKeyDownCapture={handleKeyDown}
-      className="relative w-full h-screen overflow-hidden font-anton select-none touch-none outline-none bg-cover bg-center"
-      style={{ backgroundColor: bgColor }}
+      className="relative w-full h-screen overflow-hidden font-anton select-none touch-none outline-none"
     >
+      {/* ---------- Background layers ---------- */}
+      <div className="absolute inset-0 overflow-hidden pd-kenburns">
+        {/* sky */}
+        <div
+          className="absolute inset-x-0 top-0"
+          style={{
+            height: `${HORIZON_PCT + 2}%`,
+            background: 'linear-gradient(to bottom, #5fa8d3 0%, #8fc6e0 45%, #cfe6e2 100%)',
+          }}
+        />
+        {/* clouds */}
+        {[
+          { top: '9%', left: '11%', w: 13 },
+          { top: '17%', left: '61%', w: 10 },
+          { top: '6%', left: '78%', w: 9 },
+          { top: '21%', left: '31%', w: 8 },
+        ].map((c, i) => (
+          <div key={i} className="absolute" style={{ top: c.top, left: c.left, width: `${c.w}vw`, height: `${c.w * 0.42}vw`, opacity: 0.92 }}>
+            <div className="absolute rounded-full bg-white" style={{ left: '0%', bottom: '0%', width: '60%', height: '78%' }} />
+            <div className="absolute rounded-full bg-white" style={{ left: '32%', bottom: '20%', width: '68%', height: '80%' }} />
+            <div className="absolute rounded-full bg-white" style={{ left: '58%', bottom: '5%', width: '46%', height: '62%' }} />
+          </div>
+        ))}
+        {/* distant treeline silhouette */}
+        <svg
+          className="absolute inset-x-0"
+          style={{ top: `${HORIZON_PCT - 5}%`, height: '7%', width: '100%' }}
+          viewBox="0 0 100 10"
+          preserveAspectRatio="none"
+        >
+          <polygon
+            fill="#6e8f6a"
+            opacity="0.55"
+            points="0,10 0,6 5,4 9,6 14,3 19,5.5 24,2.5 30,5 35,3.5 41,6 46,3 52,5.5 58,2.8 64,5.5 70,3.5 76,6 82,4 88,6.5 94,4.5 100,6 100,10"
+          />
+        </svg>
+        {/* ground */}
+        <div
+          className="absolute inset-x-0 bottom-0"
+          style={{
+            top: `${HORIZON_PCT}%`,
+            background: 'linear-gradient(to bottom, #9bc77f 0%, #7cad5c 30%, #5c9244 70%, #4d8038 100%)',
+          }}
+        />
+        {/* atmospheric haze near the horizon */}
+        <div
+          className="absolute inset-x-0 top-[38%] h-[20%]"
+          style={{ background: 'linear-gradient(to bottom, rgba(225,232,238,0.45) 0%, rgba(225,232,238,0.15) 60%, rgba(225,232,238,0) 100%)' }}
+        />
+      </div>
+
       <div className="absolute inset-0 z-0">
         <Canvas shadows camera={{ position: [0, 5, 10], fov: 60, rotation: [-0.2, 0, 0] }}>
           <React.Suspense fallback={null}>
