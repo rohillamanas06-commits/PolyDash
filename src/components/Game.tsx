@@ -237,7 +237,6 @@ export default function Game({ characterImage, onExit }: GameProps) {
         />
         {/* clouds */}
         {[
-          { top: '9%', left: '11%', w: 13 },
           { top: '17%', left: '61%', w: 10 },
           { top: '6%', left: '78%', w: 9 },
           { top: '21%', left: '31%', w: 8 },
