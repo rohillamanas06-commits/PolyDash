@@ -160,10 +160,10 @@ function GameScene({ characterImage, lane, isPaused, gameOver, onCrash, onScoreU
       ))}
 
       {[
-        { id: 1, x: isMobile ? -16 : -14, z: -20, scale: 1.2 },
-        { id: 2, x: isMobile ? -20 : -18, z: -50, scale: 0.9 },
-        { id: 3, x: 16, z: -30, scale: 1.1 },
-        { id: 4, x: 20, z: -60, scale: 1.3 },
+        { id: 1, x: isMobile ? -13 : -14, z: -20, scale: isMobile ? 0.9 : 1.2 },
+        { id: 2, x: isMobile ? -16 : -18, z: -50, scale: isMobile ? 0.7 : 0.9 },
+        { id: 3, x: isMobile ? 13 : 16, z: -30, scale: isMobile ? 0.8 : 1.1 },
+        { id: 4, x: isMobile ? 16 : 20, z: -60, scale: isMobile ? 1.0 : 1.3 },
       ].map((t) => (
         <group key={`tree-${t.id}`} position={[t.x, 0, t.z]} scale={[t.scale, t.scale, t.scale]}>
           <Cylinder args={[0.3, 0.4, 2]} position={[0, 1, 0]} castShadow>
@@ -285,8 +285,7 @@ export default function Game({ characterImage, onExit }: GameProps) {
           preserveAspectRatio="none"
         >
           <polygon
-            fill={isNight ? "#142415" : "#6e8f6a"}
-            opacity="0.8"
+            fill={isNight ? "#1f3616" : "#9bc77f"}
             points="0,10 0,6 5,4 9,6 14,3 19,5.5 24,2.5 30,5 35,3.5 41,6 46,3 52,5.5 58,2.8 64,5.5 70,3.5 76,6 82,4 88,6.5 94,4.5 100,6 100,10"
           />
         </svg>
@@ -302,11 +301,13 @@ export default function Game({ characterImage, onExit }: GameProps) {
         />
         {/* atmospheric haze near the horizon */}
         <div
-          className="absolute inset-x-0 top-[38%] h-[20%] transition-colors-sky"
+          className="absolute inset-x-0 transition-colors-sky pointer-events-none"
           style={{
+            top: `${HORIZON_PCT - 10}%`,
+            height: '30%',
             background: isNight
-              ? 'linear-gradient(to bottom, rgba(15,23,42,0.6) 0%, rgba(15,23,42,0.2) 60%, rgba(15,23,42,0) 100%)'
-              : 'linear-gradient(to bottom, rgba(225,232,238,0.45) 0%, rgba(225,232,238,0.15) 60%, rgba(225,232,238,0) 100%)'
+              ? 'linear-gradient(to bottom, rgba(15,23,42,0) 0%, rgba(15,23,42,0.6) 33.33%, rgba(15,23,42,0.2) 66.66%, rgba(15,23,42,0) 100%)'
+              : 'linear-gradient(to bottom, rgba(225,232,238,0) 0%, rgba(225,232,238,0.45) 33.33%, rgba(225,232,238,0.15) 66.66%, rgba(225,232,238,0) 100%)'
           }}
         />
       </div>
