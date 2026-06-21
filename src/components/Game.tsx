@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
-import { Plane, Box, Billboard } from '@react-three/drei';
+import { Plane, Box, Billboard, Cone, Cylinder } from '@react-three/drei';
 import * as THREE from 'three';
 import { playSound } from '../lib/audio';
 
@@ -127,7 +127,7 @@ function GameScene({ characterImage, lane, isPaused, gameOver, onCrash, onScoreU
       <ambientLight intensity={0.6} />
       <directionalLight position={[10, 20, 5]} intensity={1.5} castShadow />
 
-      <Plane args={[60, 200]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, -40]} receiveShadow>
+      <Plane args={[24, 200]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, -40]} receiveShadow>
         <meshStandardMaterial color="#333" roughness={0.8} metalness={0.2} />
       </Plane>
       <Plane args={[0.2, 200]} rotation={[-Math.PI / 2, 0, 0]} position={[-LANE_WIDTH / 2, -0.49, -40]} receiveShadow>
@@ -151,6 +151,25 @@ function GameScene({ characterImage, lane, isPaused, gameOver, onCrash, onScoreU
           <Box args={[LANE_WIDTH * 0.8, 0.2, 0.6]} position={[0, 0, 0]} castShadow>
             <meshStandardMaterial color="#fff" />
           </Box>
+        </group>
+      ))}
+
+      {[
+        { id: 1, x: -14, z: -20, scale: 1.2 },
+        { id: 2, x: -18, z: -50, scale: 0.9 },
+        { id: 3, x: 16, z: -30, scale: 1.1 },
+        { id: 4, x: 20, z: -60, scale: 1.3 },
+      ].map((t) => (
+        <group key={`tree-${t.id}`} position={[t.x, 0, t.z]} scale={[t.scale, t.scale, t.scale]}>
+          <Cylinder args={[0.3, 0.4, 2]} position={[0, 1, 0]} castShadow>
+            <meshStandardMaterial color="#5C4033" roughness={0.9} />
+          </Cylinder>
+          <Cone args={[1.5, 3, 5]} position={[0, 3, 0]} castShadow>
+            <meshStandardMaterial color="#228B22" roughness={0.8} />
+          </Cone>
+          <Cone args={[1.2, 2.5, 5]} position={[0, 4.5, 0]} castShadow>
+            <meshStandardMaterial color="#2E8B57" roughness={0.8} />
+          </Cone>
         </group>
       ))}
     </>
@@ -239,7 +258,7 @@ export default function Game({ characterImage, onExit }: GameProps) {
         {[
           { top: '17%', left: '61%', w: 10 },
           { top: '6%', left: '78%', w: 9 },
-          { top: '21%', left: '31%', w: 8 },
+          { top: '17%', left: '28%', w: 10 },
         ].map((c, i) => (
           <div key={i} className="absolute" style={{ top: c.top, left: c.left, width: `${c.w}vw`, height: `${c.w * 0.42}vw`, opacity: 0.92 }}>
             <div className="absolute rounded-full bg-white" style={{ left: '0%', bottom: '0%', width: '60%', height: '78%' }} />
@@ -292,7 +311,7 @@ export default function Game({ characterImage, onExit }: GameProps) {
       </div>
 
       <div className="absolute top-20 left-4 sm:top-6 sm:left-10 z-30 pointer-events-none flex flex-col gap-2">
-        <div className="text-white text-3xl sm:text-5xl tracking-wide opacity-90 drop-shadow-md">
+        <div className="text-white text-2xl sm:text-3xl tracking-wide opacity-90 drop-shadow-md">
           SCORE: {score}
         </div>
       </div>
