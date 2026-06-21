@@ -122,10 +122,12 @@ function GameScene({ characterImage, lane, isPaused, gameOver, onCrash, onScoreU
     setHurdles([...hurdlesRef.current]);
   });
 
+  const isNightScene = Math.floor(scoreRef.current / 1500) % 2 === 1;
+
   return (
     <>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 20, 5]} intensity={1.5} castShadow />
+      <ambientLight intensity={isNightScene ? 0.2 : 0.6} />
+      <directionalLight position={[10, 20, 5]} intensity={isNightScene ? 0.5 : 1.5} castShadow />
 
       <Plane args={[24, 200]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, -40]} receiveShadow>
         <meshStandardMaterial color="#333" roughness={0.8} metalness={0.2} />
@@ -182,6 +184,8 @@ export default function Game({ characterImage, onExit }: GameProps) {
   const [gameOver, setGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  const isNight = Math.floor(score / 150) % 2 === 1;
 
   useEffect(() => {
     containerRef.current?.focus();
@@ -248,19 +252,23 @@ export default function Game({ characterImage, onExit }: GameProps) {
       <div className="absolute inset-0 overflow-hidden pd-kenburns">
         {/* sky */}
         <div
-          className="absolute inset-x-0 top-0"
+          className="absolute inset-x-0 top-0 transition-colors-sky"
           style={{
             height: `${HORIZON_PCT + 2}%`,
-            background: 'linear-gradient(to bottom, #5fa8d3 0%, #8fc6e0 45%, #cfe6e2 100%)',
+            background: isNight
+              ? 'linear-gradient(to bottom, #0f172a 0%, #1e1b4b 50%, #312e81 100%)' 
+              : 'linear-gradient(to bottom, #5fa8d3 0%, #8fc6e0 45%, #cfe6e2 100%)',
           }}
         />
+
+
         {/* clouds */}
         {[
           { top: '17%', left: '61%', w: 10 },
           { top: '6%', left: '78%', w: 9 },
           { top: '17%', left: '28%', w: 10 },
         ].map((c, i) => (
-          <div key={i} className="absolute" style={{ top: c.top, left: c.left, width: `${c.w}vw`, height: `${c.w * 0.42}vw`, opacity: 0.92 }}>
+          <div key={i} className="absolute" style={{ top: c.top, left: c.left, width: `${c.w}vw`, height: `${c.w * 0.42}vw`, opacity: isNight ? 0.3 : 0.92 }}>
             <div className="absolute rounded-full bg-white" style={{ left: '0%', bottom: '0%', width: '60%', height: '78%' }} />
             <div className="absolute rounded-full bg-white" style={{ left: '32%', bottom: '20%', width: '68%', height: '80%' }} />
             <div className="absolute rounded-full bg-white" style={{ left: '58%', bottom: '5%', width: '46%', height: '62%' }} />
@@ -274,23 +282,28 @@ export default function Game({ characterImage, onExit }: GameProps) {
           preserveAspectRatio="none"
         >
           <polygon
-            fill="#6e8f6a"
-            opacity="0.55"
+            fill={isNight ? "#142415" : "#6e8f6a"}
+            opacity="0.8"
             points="0,10 0,6 5,4 9,6 14,3 19,5.5 24,2.5 30,5 35,3.5 41,6 46,3 52,5.5 58,2.8 64,5.5 70,3.5 76,6 82,4 88,6.5 94,4.5 100,6 100,10"
           />
         </svg>
         {/* ground */}
         <div
-          className="absolute inset-x-0 bottom-0"
+          className="absolute inset-x-0 bottom-0 transition-colors-sky"
           style={{
             top: `${HORIZON_PCT}%`,
-            background: 'linear-gradient(to bottom, #9bc77f 0%, #7cad5c 30%, #5c9244 70%, #4d8038 100%)',
+            background: isNight
+              ? 'linear-gradient(to bottom, #1f3616 0%, #15290f 30%, #0d1a09 70%, #050d03 100%)'
+              : 'linear-gradient(to bottom, #9bc77f 0%, #7cad5c 30%, #5c9244 70%, #4d8038 100%)',
           }}
         />
         {/* atmospheric haze near the horizon */}
         <div
-          className="absolute inset-x-0 top-[38%] h-[20%]"
-          style={{ background: 'linear-gradient(to bottom, rgba(225,232,238,0.45) 0%, rgba(225,232,238,0.15) 60%, rgba(225,232,238,0) 100%)' }}
+          className="absolute inset-x-0 top-[38%] h-[20%] transition-colors-sky"
+          style={{ background: isNight
+            ? 'linear-gradient(to bottom, rgba(15,23,42,0.6) 0%, rgba(15,23,42,0.2) 60%, rgba(15,23,42,0) 100%)'
+            : 'linear-gradient(to bottom, rgba(225,232,238,0.45) 0%, rgba(225,232,238,0.15) 60%, rgba(225,232,238,0) 100%)' 
+          }}
         />
       </div>
 

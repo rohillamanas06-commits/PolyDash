@@ -10,16 +10,31 @@
 }
 
 @keyframes flyRight {
-  from { left: -10%; }
-  to { left: 110%; }
+  from {
+    left: -10%;
+  }
+
+  to {
+    left: 110%;
+  }
 }
+
 @keyframes flap {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.4); }
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.4);
+  }
 }
+
 .bird-fly {
   animation: flyRight 30s linear infinite;
 }
+
 .bird-flap {
   animation: flap 0.6s ease-in-out infinite;
   transform-origin: center;
